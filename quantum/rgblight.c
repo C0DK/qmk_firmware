@@ -37,7 +37,23 @@
 #ifdef VELOCIKEY_ENABLE
 #    include "velocikey.h"
 #endif
-
+#ifndef __AVR__
+#    define memcpy_P(des, src, len) memcpy(des, src, len)
+#endif
+#if !defined(pgm_read_ptr) || defined(__DOXYGEN__)
+/** Reads a pointer out of PROGMEM space on the AVR8 architecture. This is a wrapper for the avr-libc
+ *  \c pgm_read_word() macro with a \c void* cast, so that its value can be assigned directly to a
+ *  pointer variable or used in pointer arithmetic without further casting in C.
+ *
+ *  \note This macro is not available for all architectures.
+ *
+ *  \param[in] Address  Address of the pointer to read.
+ *
+ *  \return Pointer retrieved from PROGMEM space.
+ */
+#define pgm_read_ptr(Address)       (void*)pgm_read_word(Address)
+#endif
+#define memcpy_P(des, src, len) memcpy(des, src, len)
 #ifndef MIN
 #    define MIN(a, b) (((a) < (b)) ? (a) : (b))
 #endif
